@@ -18,7 +18,10 @@
     "svelte-dnd-action": "^0.8.8"
   },
   "dependencies": {
+    "firebase": "^8.2.9",
     "normalize.css": "^8.0.1",
+    "rxfire": "^4.0.0",
+    "rxjs": "^6.6.3",
     "sirv-cli": "^1.0.0"
   }
 }
