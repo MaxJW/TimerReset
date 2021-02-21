@@ -38,14 +38,13 @@
         months[$time.getMonth()]; //Get current day, date, and month in format (Monday 1 January)
 </script>
 
-<div id="time-date" class="pos-fixed center-full pos-abs">
+<div id="time-date" class="pos-fixed center-full w-100">
     <div id="date">{date}</div>
     <div id="time">{hours}:{minutes}</div>
 </div>
 
 <style>
     #time-date {
-        width: 100%;
         padding-top: var(--body-padding);
         z-index: 2;
         user-select: none;
