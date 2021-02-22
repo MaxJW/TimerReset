@@ -14,9 +14,15 @@
     export let id;
 
     let timer;
+    let resetter = false;
+    let alert = new Audio("./reset.mp3");
+    alert.volume = 0.5;
+    let initial = true;
+    let notification = true;
 
     onMount(() => {
         timer = lastReset.toDate();
+        initial = true;
     });
 
     //Reset a timer to 0, and store time in leaderboard
@@ -27,6 +33,7 @@
         let newResetTime = firebase.firestore.Timestamp.fromDate(new Date());
         let resetIncrease = timesReset + 1;
         let secondsSinceReset = currTime > longestResetSeconds ? currTime : 0;
+        notification = false;
         dispatch("reset", {
             id,
             newResetTime,
@@ -35,11 +42,44 @@
         });
     }
 
+    function resetAlert() {
+        if (!initial) {
+            resetter = true;
+            alert.play();
+            setTimeout(() => {
+                resetter = false;
+            }, 1000);
+
+            if (notification) {
+                if (Notification.permission === "granted") {
+                    var notification = new Notification(
+                        name + " had their timer reset!"
+                    );
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(function (
+                        permission
+                    ) {
+                        if (permission === "granted") {
+                            var notification = new Notification(
+                                name + " had their timer reset!"
+                            );
+                        }
+                    });
+                }
+            }
+            notification = true;
+        } else {
+            initial = false;
+            console.log(initial);
+        }
+    }
+
     const unsubscribe = db
         .collection("timers")
         .doc(id)
         .onSnapshot((doc) => {
             timer = doc.data().lastReset.toDate();
+            resetAlert();
         });
 
     $: currTime =
@@ -53,7 +93,11 @@
     onDestroy(unsubscribe);
 </script>
 
-<div class="timer" style="--dpp: url(/images/{name}.png)">
+<div
+    class="timer"
+    style="--dpp: url(/images/{name}.png)"
+    class:resetbs={resetter}
+>
     <span class="time-name hide">{name}</span>
     <span class="time-span pos-abs"
         >{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</span
@@ -78,7 +122,9 @@
         border-radius: 50%;
         justify-content: space-around;
         align-items: center;
-        transition: background-size 0.5s ease;
+        box-shadow: 0px 0px 0px 0px #ff0000;
+        transition: background-size 0.5s ease, z-index 5s step-end,
+            box-shadow 0.9s ease;
     }
 
     .timer:hover {
@@ -107,5 +153,10 @@
         font-family: "Roboto Mono", monospace;
         font-size: 2.5rem;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
+    }
+
+    .resetbs {
+        box-shadow: 0px 0px 1px 1400px #ff0000 !important;
+        transition: z-index 5s step-end, box-shadow 0.9s ease !important;
     }
 </style>
