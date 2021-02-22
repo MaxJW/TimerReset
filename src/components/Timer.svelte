@@ -1,7 +1,7 @@
 <script>
     import { onMount, onDestroy, createEventDispatcher } from "svelte";
     import firebase from "firebase/app";
-    import { db } from "../firebase";
+    import { db } from "../firebase.js";
     import { time } from "../stores";
     import { padWithZeroes } from "../utils";
 

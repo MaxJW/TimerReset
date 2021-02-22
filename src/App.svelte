@@ -1,6 +1,6 @@
 <script>
 	import "normalize.css"; //Normalize CSS elements - https://necolas.github.io/normalize.css/
-	import { db } from "firebase";
+	import { db } from "./firebase.js";
 	import { collectionData } from "rxfire/firestore";
 	import { startWith } from "rxjs/operators";
 	import Timer from "./components/Timer.svelte";
