@@ -1,6 +1,6 @@
 <script>
-    import { time } from "../stores.js";
-    import { padWithZeroes } from "../utils.js";
+    import { time } from "../stores";
+    import { padWithZeroes } from "../utils";
 
     $: hours = padWithZeroes($time.getHours()); //Pad time with zeros
     $: minutes = padWithZeroes($time.getMinutes()); //Pad time with zeros

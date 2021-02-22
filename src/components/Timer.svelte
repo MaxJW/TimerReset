@@ -1,28 +1,53 @@
 <script>
-    import { onMount } from "svelte";
-    import { time } from "../stores.js";
-    import { padWithZeroes } from "../utils.js";
+    import { onMount, onDestroy, createEventDispatcher } from "svelte";
+    import firebase from "firebase/app";
+    import { db } from "../firebase";
+    import { time } from "../stores";
+    import { padWithZeroes } from "../utils";
 
-    let start; //Get current time when starting/resuming timer
+    const dispatch = createEventDispatcher();
+
+    export let lastReset; //Get current time when starting/resuming timer
+    export let timesReset;
+    export let name;
+    export let id;
+
+    let timer = new Date();
 
     onMount(() => {
-        start = new Date(2021, 1, 20); //Get current timer
+        timer = lastReset.toDate();
     });
 
     //Reset a timer to 0, and store time in leaderboard
     function resetTimer() {
-        start = $time.getTime();
+        let newResetTime = firebase.firestore.Timestamp.fromDate(new Date());
+        let resetIncrease = timesReset + 1;
+        dispatch("reset", { id, newResetTime, resetIncrease });
     }
 
-    $: currTime = Math.floor(($time.getTime() - start) / 1000);
+    const unsubscribe = db
+        .collection("timers")
+        .doc(id)
+        .onSnapshot((doc) => {
+            timer = doc.data().lastReset.toDate();
+        });
+
+    $: currTime = Math.floor(($time.getTime() - timer.getTime()) / 1000);
     $: hours = Math.floor(currTime / 3600);
-    $: minutes = Math.floor(currTime / 60) - hours*60; //Calculate number of minutes remaining
+    $: minutes = Math.floor(currTime / 60) - hours * 60; //Calculate number of minutes remaining
     $: seconds = Math.floor(currTime % 60); //Calculate number of seconds remaining (in current minute)
+
+    onDestroy(unsubscribe);
 </script>
 
-<div id="pomodoro-timer" class="pos-abs center-full w-100 h-100">
-    <div id="pomo-clock">{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</div>
-    <div id="pomo-controls">
-        <button type="button" on:click={resetTimer}>Reset</button>
-    </div>
+<div class="timer">
+    <span>{name}</span>
+    {hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}
+    <button type="button" on:click={resetTimer}>Reset</button>
 </div>
+
+<style>
+    .timer {
+        padding-bottom: 20px;
+    }
+</style>
