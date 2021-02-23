@@ -65,7 +65,7 @@
 		const { id, reason } = event.detail;
 		let newData = { votingActive: true, voteReason: reason };
 		db.collection("timers").doc(id).update(newData);
-		addYesVote(event);
+		addYesVote({ detail: id });
 	}
 
 	function addYesVote(event) {
