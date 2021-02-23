@@ -22,7 +22,9 @@
     let timer;
     let oldResetCount = 0;
     let resetter = false;
-    let alert = new Audio("./reset.mp3");
+    let alert = new Audio("./sounds/alert.mp3");
+    let reset = new Audio("./sounds/reset.mp3");
+    let success = new Audio("./sounds/success.mp3");
     alert.volume = 0.5;
     let initial = true;
     let votingStarted = false;
@@ -73,7 +75,7 @@
 
     function votingEndedAlert() {
         if (!initial) {
-            alert.play();
+            success.play();
             if (Notification.permission === "granted") {
                 var newnotif = new Notification(
                     name + "'s timer was NOT reset"
@@ -114,7 +116,7 @@
 
     function resetAlert() {
         resetter = true;
-        alert.play();
+        reset.play();
         setTimeout(() => {
             resetter = false;
         }, 1000);
