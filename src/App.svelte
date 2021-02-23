@@ -18,7 +18,9 @@
 		voter = db.collection("voters").doc(u.uid);
 	});
 	function login() {
-		auth.signInWithPopup(googleProvider);
+		auth.signInWithPopup(googleProvider).then(function (result) {
+			location.reload();
+		});
 	}
 
 	const query = db.collection("timers").orderBy("name");
