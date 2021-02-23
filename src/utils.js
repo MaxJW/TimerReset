@@ -35,10 +35,10 @@ export function timeSince(seconds) {
         60 * 60 * hours -
         60 * minutes;
     totaltime =
-        (weeks > 1 ? weeks + " weeks, " : "") +
-        (days > 1 ? days + " days, " : "") +
-        (hours > 1 ? hours + " hours, " : "") +
-        (minutes > 1 ? minutes + " minutes, " : "") +
-        (seconds > 1 ? seconds + " seconds" : "");
+        (weeks >= 1 ? weeks + " weeks, " : "") +
+        (days >= 1 ? (days == 1 ? days + " day, " : days + " days, ") : "") +
+        (hours >= 1 ? (hours == 1 ? hours + " hour, " : hours + " hours, ") : "") +
+        (minutes >= 1 ? (minutes == 1 ? minutes + " minute, " : minutes + " minutes, ") : "") +
+        (seconds >= 1 ? (seconds == 1 ? seconds + " second, " : seconds + " seconds, ") : "");
     return totaltime == "" ? "N/A" : totaltime;
 }
