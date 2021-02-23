@@ -16,15 +16,6 @@
 	const unsubscribe = authState(auth).subscribe((u) => {
 		user = u;
 		voter = db.collection("voters").doc(u.uid);
-		voter.set({
-			alistair: false,
-			blair: false,
-			daniel: false,
-			ewan: false,
-			max: false,
-			ross: false,
-			name: "",
-		});
 	});
 	function login() {
 		auth.signInWithPopup(googleProvider);
