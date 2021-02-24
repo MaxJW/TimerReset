@@ -148,6 +148,7 @@
                         resetTimer();
                     } else {
                         endVote();
+                        votingEndedAlert();
                     }
                 }
             } else {
@@ -156,7 +157,7 @@
                     timer = doc.data().lastReset.toDate();
                     resetAlert();
                 } else {
-                    votingEndedAlert();
+                    endVote();
                 }
             }
         });
