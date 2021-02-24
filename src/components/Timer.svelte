@@ -135,7 +135,7 @@
             if (votingActive && votingStarted) {
                 voteAlert();
             } else if (votingActive) {
-                if (yesVotes + noVotes == 6 || yesVotes >= 4 || noVotes >= 4) {
+                if (yesVotes + noVotes == 6 || yesVotes >= 4 || noVotes >= 3) {
                     if (yesVotes >= 4) {
                         resetTimer();
                     } else {
