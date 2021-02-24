@@ -28,13 +28,11 @@
     alert.volume = 0.5;
     reset.volume = 0.5;
     success.volume = 0.3;
-    let initial = true;
     let votingStarted = false;
 
     onMount(() => {
         timer = lastReset.toDate();
         oldResetCount = timesReset;
-        initial = votingActive ? false : true;
     });
 
     function beginVoting() {
@@ -76,23 +74,17 @@
     }
 
     function votingEndedAlert() {
-        if (!initial) {
-            success.play();
-            if (Notification.permission === "granted") {
-                var newnotif = new Notification(
-                    name + "'s timer was NOT reset"
-                );
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(function (permission) {
-                    if (permission === "granted") {
-                        var newnotif = new Notification(
-                            name + "'s timer was NOT reset"
-                        );
-                    }
-                });
-            }
-        } else {
-            initial = false;
+        success.play();
+        if (Notification.permission === "granted") {
+            var newnotif = new Notification(name + "'s timer was NOT reset");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    var newnotif = new Notification(
+                        name + "'s timer was NOT reset"
+                    );
+                }
+            });
         }
     }
 
@@ -156,9 +148,8 @@
                     oldResetCount = timesReset;
                     timer = doc.data().lastReset.toDate();
                     resetAlert();
-                } else {
-                    endVote();
                 }
+                endVote();
             }
         });
 
