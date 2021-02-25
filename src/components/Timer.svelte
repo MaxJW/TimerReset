@@ -96,7 +96,7 @@
 
     //Reset a timer to 0, and store time in leaderboard
     function resetTimer() {
-        let newResetTime = firebase.firestore.Timestamp.fromDate(new Date());
+        let newResetTime = firebase.firestore.Timestamp.fromDate($time);
         let resetIncrease = timesReset + 1;
         let secondsSinceReset = currTime > longestResetSeconds ? currTime : 0;
         votingStarted = false;
