@@ -27,7 +27,7 @@
     let success = new Audio("./sounds/success.mp3");
     alert.volume = 0.5;
     reset.volume = 0.5;
-    success.volume = 0.3;
+    success.volume = 0.1;
     let votingStarted = false;
 
     onMount(() => {
