@@ -26,7 +26,7 @@
     let reset = new Audio("./sounds/reset.mp3");
     let success = new Audio("./sounds/success.mp3");
     alert.volume = 0.5;
-    reset.volume = 0.2;
+    reset.volume = 0.3;
     success.volume = 0.5;
     let votingStarted = false;
 
