@@ -166,10 +166,11 @@
 
 <div
     class="timer"
-    style="--dpp: url(/images/{name}.png); --dpp-a: url(/images/{name}-anim.gif);"
+    style="--dpp-a: url(/images/{name}-anim.gif);"
     class:resetbs={resetter}
     class:resetting={votingActive}
 >
+    <img class="opac" src="/images/{name}.png" alt="Profile hiding gif"/>
     <span class="time-name hide cdefault">{name}</span>
     {#if !votingActive}
         <!--<span class="lastreason">{voteReason}</span>-->
@@ -209,7 +210,7 @@
                 rgba(0, 0, 0, 0.3),
                 rgba(0, 0, 0, 0.3)
             ),
-            var(--dpp);
+            var(--dpp-a);
         background-size: 100% auto;
         background-repeat: no-repeat;
         background-position: center center;
@@ -222,18 +223,38 @@
         justify-content: space-around;
         align-items: center;
         box-shadow: 0px 0px 0px 0px #ff0000;
-        transition: background-image 0.5s ease, background-size 0.5s ease, z-index 5s step-end,
+        transition: background-size 0.5s ease, z-index 5s step-end,
             box-shadow 0.9s ease;
+        overflow: hidden;
     }
 
     .timer:hover {
-        background-image: linear-gradient(
-                rgba(0, 0, 0, 0.3),
-                rgba(0, 0, 0, 0.3)
-            ),
-            var(--dpp-a);
-        transition: background-image 0.5s ease, background-size 0.5s ease;
+        transition: background-size 0.5s ease;
         background-size: 125% auto;
+    }
+
+    .timer > * {
+        z-index: 1;
+    }
+
+    .opac {
+        position: absolute;
+        z-index: 0 !important;
+        filter: brightness(70%);
+        border-radius: 50%;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 1;
+        -webkit-transition: -webkit-transform 0.5s ease;
+        transition: opacity 0.2s ease, transform 0.5s ease;
+    }
+
+    .timer:hover .opac {
+        -webkit-transform: scale(1.25);
+        transform: scale(1.25);
+        opacity: 0;
+        -webkit-transition: -webkit-transform 0.5s ease;
+        transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .timer:hover .hide {
