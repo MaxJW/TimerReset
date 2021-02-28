@@ -107,7 +107,6 @@
 			yesVotes: 0,
 			noVotes: 0,
 			votingActive: false,
-			voteReason: "",
 		};
 		db.collection("timers").doc(id).update(newData);
 		db.collection("voters")

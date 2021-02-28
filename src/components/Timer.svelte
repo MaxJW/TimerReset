@@ -166,12 +166,13 @@
 
 <div
     class="timer"
-    style="--dpp: url(/images/{name}.png)"
+    style="--dpp: url(/images/{name}.png); --dpp-a: url(/images/{name}-anim.gif);"
     class:resetbs={resetter}
     class:resetting={votingActive}
 >
     <span class="time-name hide cdefault">{name}</span>
     {#if !votingActive}
+        <!--<span class="lastreason">{voteReason}</span>-->
         <span class="time-span pos-abs cdefault"
             >{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</span
         >
@@ -213,6 +214,7 @@
         background-repeat: no-repeat;
         background-position: center center;
         display: flex;
+        position: relative;
         flex-direction: column;
         width: 250px;
         height: 250px;
@@ -220,13 +222,17 @@
         justify-content: space-around;
         align-items: center;
         box-shadow: 0px 0px 0px 0px #ff0000;
-        transition: background-size 0.5s ease, z-index 5s step-end,
+        transition: background-image 0.5s ease, background-size 0.5s ease, z-index 5s step-end,
             box-shadow 0.9s ease;
-        overflow: hidden;
     }
 
     .timer:hover {
-        transition: background-size 0.5s ease;
+        background-image: linear-gradient(
+                rgba(0, 0, 0, 0.3),
+                rgba(0, 0, 0, 0.3)
+            ),
+            var(--dpp-a);
+        transition: background-image 0.5s ease, background-size 0.5s ease;
         background-size: 125% auto;
     }
 
@@ -287,5 +293,11 @@
     }
     .cdefault {
         cursor: default;
+    }
+
+    .lastreason {
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 </style>
