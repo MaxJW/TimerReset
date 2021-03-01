@@ -38,7 +38,7 @@
 
     .totals-header {
         font-size: 2rem;
-        font-family: "Righteous", cursive;
+        font-family: 'Roboto', sans-serif;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
     }
 

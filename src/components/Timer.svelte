@@ -29,6 +29,7 @@
     reset.volume = 0.3;
     success.volume = 0.5;
     let votingStarted = false;
+    let flipped = false;
 
     onMount(() => {
         timer = lastReset.toDate();
@@ -91,8 +92,6 @@
     const addYesVote = () => dispatch("yesvote", id);
     const addNoVote = () => dispatch("novote", id);
     const endVote = () => dispatch("endvote", id);
-
-    const reasonDisplay = () => window.alert(voteReason);
 
     //Reset a timer to 0, and store time in leaderboard
     function resetTimer() {
@@ -164,55 +163,79 @@
     onDestroy(unsubscribe);
 </script>
 
-<div
-    class="timer"
-    class:resetbs={resetter}
-    class:resetting={votingActive}
->
-    <img class="solid" src="/images/{name}-anim.gif" alt="Profile animated gif" />
+<div class="timer" class:resetbs={resetter} class:resetting={votingActive}>
+    <img
+        class="solid"
+        src="/images/{name}-anim.gif"
+        alt="Profile animated gif"
+    />
     <img class="opac" src="/images/{name}.png" alt="Profile opacity changes" />
-    <span class="time-name hide cdefault">{name}</span>
-    {#if !votingActive}
-        <!--<span class="lastreason">{voteReason}</span>-->
-        <span class="time-span pos-abs cdefault"
-            >{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</span
-        >
-        <button class="hide" type="button" on:click={beginVoting}
-            >Vote Reset</button
-        >
-    {:else}
-        <div class="cpointer" on:click={reasonDisplay}>
-            <span class="time-span">Reset?</span>
-            <div class="center-full flex-row">
-                {#each Array(yesVotes) as _}
-                    <div class="box yes" />
-                {/each}
-                {#each Array(noVotes) as _}
-                    <div class="box no" />
-                {/each}
-                {#each Array(6 - yesVotes - noVotes) as _}
-                    <div class="box unknown" />
-                {/each}
-            </div>
-        </div>
-        <div>
-            <button class="hide" type="button" on:click={addYesVote}>Yes</button
+    <div class="flipper cpointer" on:click={() => (flipped = !flipped)}>
+        <i class="fas fa-info-circle" />
+    </div>
+    <div class="timer-inner" class:flip={flipped}>
+        <span class="time-name hide cdefault">{name}</span>
+        {#if !votingActive}
+            <!--<span class="lastreason">{voteReason}</span>-->
+            <span class="time-span pos-abs cdefault"
+                >{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</span
             >
-            <button class="hide" type="button" on:click={addNoVote}>No</button>
-        </div>
-    {/if}
+            <button class="hide" type="button" on:click={beginVoting}
+                >Vote Reset</button
+            >
+        {:else}
+            <div class="reset-container">
+                <span class="time-span">Reset?</span>
+                <div class="center-full flex-row">
+                    {#each Array(yesVotes) as _}
+                        <div class="box yes" />
+                    {/each}
+                    {#each Array(noVotes) as _}
+                        <div class="box no" />
+                    {/each}
+                    {#each Array(6 - yesVotes - noVotes) as _}
+                        <div class="box unknown" />
+                    {/each}
+                </div>
+            </div>
+            <div class="voting-buttons">
+                <button class="hide" type="button" on:click={addYesVote}
+                    >Yes</button
+                >
+                <button class="hide" type="button" on:click={addNoVote}
+                    >No</button
+                >
+            </div>
+        {/if}
+    </div>
+    <div class="timer-inner" class:flip={!flipped}>
+        {#if !votingActive}
+            <span class="votereason cdefault"
+                ><strong>Last Reset Reason</strong>
+                <hr />
+                {voteReason}</span
+            >
+        {:else}
+            <span class="votereason cdefault"
+                ><strong>Current Reset Reason</strong>
+                <hr />
+                {voteReason}</span
+            >
+        {/if}
+    </div>
 </div>
 
 <style>
     .timer {
         box-sizing: border-box;
-        display: flex;
         position: relative;
+        display: flex;
         flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
         width: 250px;
         height: 250px;
         border-radius: 50%;
-        justify-content: space-around;
         align-items: center;
         box-shadow: 0px 0px 0px 0px #ff0000;
         transition: z-index 5s step-end, box-shadow 0.9s ease;
@@ -221,6 +244,37 @@
 
     .timer > * {
         z-index: 1;
+    }
+
+    .timer-inner {
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+        -webkit-backface-visibility: hidden; /* Safari */
+        backface-visibility: hidden;
+        transition: transform 0.8s ease, opacity 1s ease;
+        transform-style: preserve-3d;
+    }
+
+    .flipper {
+        position: absolute;
+        top: 2px;
+        z-index: 2;
+        transition: color 0.2s ease;
+    }
+
+    .flipper:hover {
+        color: #222a38;
+    }
+
+    .timer-inner.flip {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        transition: transform 0.8s ease, opacity 1s ease;
+        opacity: 0;
     }
 
     .solid {
@@ -276,9 +330,20 @@
         border: 10px solid red;
     }
 
+    .votereason {
+        font-size: 1.25rem;
+        font-family: "Roboto", sans-serif;
+        text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
+    }
+
+    .voting-buttons {
+        margin-top: 17px;
+    }
+
     .time-name {
         font-size: 2rem;
-        font-family: "Righteous", cursive;
+        font-family: "Roboto", sans-serif;
+        font-weight: bold;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
     }
 
@@ -291,6 +356,11 @@
     .resetbs {
         box-shadow: 0px 0px 1px 1400px #ff0000 !important;
         transition: z-index 5s step-end, box-shadow 0.9s ease !important;
+    }
+
+    .reset-container {
+        line-height: 30px;
+        position: inherit;
     }
 
     .flex-row {
@@ -318,11 +388,5 @@
     }
     .cdefault {
         cursor: default;
-    }
-
-    .lastreason {
-        position: absolute;
-        top: 0;
-        left: 0;
     }
 </style>
