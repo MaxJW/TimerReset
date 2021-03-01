@@ -1,0 +1,10 @@
+{
+    "name": "Timer Reset",
+    "short_name": "Timer Reset",
+    "theme_color": "#222A38",
+    "background_color": "#222A38",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/"
+}
