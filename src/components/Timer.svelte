@@ -170,7 +170,7 @@
         alt="Profile animated gif"
     />
     <img class="opac" src="/images/{name}.png" alt="Profile opacity changes" />
-    <div class="flipper cpointer" on:click={() => (flipped = !flipped)}>
+    <div class="flipper cpointer hide" on:click={() => (flipped = !flipped)}>
         <i class="fas fa-info-circle" />
     </div>
     <div class="timer-inner" class:flip={flipped}>
