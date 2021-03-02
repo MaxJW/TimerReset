@@ -167,7 +167,7 @@
     onDestroy(unsubscribe);
 </script>
 
-<div class="timer" class:resetbs={resetter} class:resetting={votingActive}>
+<div class="timer" class:resetbs={resetter} class:resetting={votingActive} on:mouseleave={() => (flipped = false)}>
     <img
         class="solid"
         src="/images/{name}-anim.gif"
