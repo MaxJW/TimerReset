@@ -51,6 +51,10 @@
             "LoL Rage"
         );
         if (reason != null) {
+            if (reason.length > 60) {
+                alert("Reason is too long, please state a shorter reason!")
+                return;
+            }
             votingStarted = true;
             dispatch("beginvote", { id, reason });
         }
@@ -334,6 +338,8 @@
         font-size: 1.25rem;
         font-family: "Roboto", sans-serif;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
+        overflow: hidden;
+        padding: 1.5rem;
     }
 
     .voting-buttons {
