@@ -1,12 +1,10 @@
 <script>
-    import { timeSince } from "../utils";
+    import { timeSince } from '../utils';
     export let leaderboard;
 
     let avgTimerLength = 0;
     let totalResets = 0;
-    $: avgTimerLength = timeSince(
-        leaderboard.reduce((a, b) => a + b.lrs, 0) / leaderboard.length
-    );
+    $: avgTimerLength = timeSince(leaderboard.reduce((a, b) => a + b.lrs, 0) / leaderboard.length);
     $: totalResets = leaderboard.reduce((a, b) => a + b.tr, 0);
 </script>
 
@@ -43,7 +41,7 @@
     }
 
     .totals-amount {
-        font-family: "Roboto Mono", monospace;
+        font-family: 'Roboto Mono', monospace;
         font-size: 1.5rem;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
     }

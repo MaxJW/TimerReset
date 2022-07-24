@@ -1,8 +1,8 @@
 <script>
-    import { fly } from "svelte/transition";
-    import { sineOut } from "svelte/easing";
-    import { onMount } from "svelte";
-    import { timeSince } from "../utils";
+    import { fly } from 'svelte/transition';
+    import { sineOut } from 'svelte/easing';
+    import { onMount } from 'svelte';
+    import { timeSince } from '../utils';
 
     export let leaderboard;
     let showPanel = false;
@@ -32,12 +32,7 @@
 </script>
 
 <div id="leaderboard-panel" class="pos-fixed center-full">
-    <div
-        id="panel-open"
-        class="center-full"
-        class:open={showPanel}
-        on:click={togglePanel}
-    >
+    <div id="panel-open" class="center-full" class:open={showPanel} on:click={togglePanel}>
         <i class="fas fa-angle-left pos-abs" />
     </div>
     {#if showPanel}

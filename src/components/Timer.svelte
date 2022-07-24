@@ -1,9 +1,9 @@
 <script>
-    import { onMount, onDestroy, createEventDispatcher } from "svelte";
-    import firebase from "firebase/app";
-    import { db } from "../firebase.js";
-    import { time } from "../stores";
-    import { padWithZeroes } from "../utils";
+    import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+    import firebase from 'firebase/app';
+    import { db } from '../firebase.js';
+    import { time } from '../stores';
+    import { padWithZeroes } from '../utils';
 
     const dispatch = createEventDispatcher();
 
@@ -19,58 +19,80 @@
     export let name;
     export let id;
 
+    export let discordID;
+
     let timer;
     let oldResetCount = 0;
     let resetter = false;
-    let alert = new Audio("./sounds/alert.mp3");
-    let reset = new Audio("./sounds/reset.mp3");
-    let success = new Audio("./sounds/success.mp3");
+    let alert = new Audio('./sounds/alert.mp3');
+    let reset = new Audio('./sounds/reset.mp3');
+    let success = new Audio('./sounds/success.mp3');
     alert.volume = 0.5;
     reset.volume = 0.3;
     success.volume = 0.5;
     let votingStarted = false;
     let flipped = false;
 
+    //get discord key from .env, send request to discord api to get user from id using key in authorization header
+    //if user is not found, return null
+    function getUser() {
+        const dc_key = DISCORD_API_KEY;
+        let url = `https://discord.com/api/v10/users/${discordID}`;
+        let headers = new Headers();
+        headers.append('Authorization', `Bot ${dc_key}`);
+        return fetch(url, {
+            headers: headers,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.avatar) {
+                    return data;
+                } else {
+                    return null;
+                }
+            });
+    }
+
     onMount(() => {
         timer = lastReset.toDate();
         oldResetCount = timesReset;
+        //get user from id then assign avatar to dc-avatar
+        getUser().then((user) => {
+            if (user) {
+                let avatar = user.avatar;
+                let url = `https://cdn.discordapp.com/avatars/${discordID}/${avatar}.png`;
+                let img = document.getElementById('dc-avatar');
+                img.src = url;
+            }
+        });
     });
 
     function beginVoting() {
-        if (
-            !confirm(
-                "Are you sure you want to vote for a reset on " +
-                    name +
-                    "'s timer?"
-            )
-        ) {
+        if (!confirm('Are you sure you want to vote for a reset on ' + name + "'s timer?")) {
             return;
         }
-        var reason = prompt(
-            "Enter a reason for " + name + "'s reset",
-            "LoL Rage"
-        );
+        var reason = prompt('Enter a reason for ' + name + "'s reset", 'LoL Rage');
         if (reason != null) {
             if (reason.length > 60) {
-                alert("Reason is too long, please state a shorter reason!")
+                alert('Reason is too long, please state a shorter reason!');
                 return;
             }
             votingStarted = true;
-            dispatch("beginvote", { id, reason });
+            dispatch('beginvote', { id, reason });
         }
     }
 
     function voteAlert() {
         alert.play();
-        if (Notification.permission === "granted") {
+        if (Notification.permission === 'granted') {
             var newnotif = new Notification(
-                "Voting for resetting " + name + "'s timer has started!"
+                'Voting for resetting ' + name + "'s timer has started!",
             );
-        } else if (Notification.permission !== "denied") {
+        } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
+                if (permission === 'granted') {
                     var newnotif = new Notification(
-                        "Voting for resetting " + name + "'s timer has started!"
+                        'Voting for resetting ' + name + "'s timer has started!",
                     );
                 }
             });
@@ -80,22 +102,20 @@
 
     function votingEndedAlert() {
         success.play();
-        if (Notification.permission === "granted") {
+        if (Notification.permission === 'granted') {
             var newnotif = new Notification(name + "'s timer was NOT reset");
-        } else if (Notification.permission !== "denied") {
+        } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
-                    var newnotif = new Notification(
-                        name + "'s timer was NOT reset"
-                    );
+                if (permission === 'granted') {
+                    var newnotif = new Notification(name + "'s timer was NOT reset");
                 }
             });
         }
     }
 
-    const addYesVote = () => dispatch("yesvote", id);
-    const addNoVote = () => dispatch("novote", id);
-    const endVote = () => dispatch("endvote", id);
+    const addYesVote = () => dispatch('yesvote', id);
+    const addNoVote = () => dispatch('novote', id);
+    const endVote = () => dispatch('endvote', id);
 
     //Reset a timer to 0, and store time in leaderboard
     function resetTimer() {
@@ -103,7 +123,7 @@
         let resetIncrease = timesReset + 1;
         let secondsSinceReset = currTime > longestResetSeconds ? currTime : 0;
         votingStarted = false;
-        dispatch("reset", {
+        dispatch('reset', {
             id,
             newResetTime,
             resetIncrease,
@@ -118,21 +138,19 @@
             resetter = false;
         }, 1000);
 
-        if (Notification.permission === "granted") {
-            var newnotif = new Notification(name + " had their timer reset!");
-        } else if (Notification.permission !== "denied") {
+        if (Notification.permission === 'granted') {
+            var newnotif = new Notification(name + ' had their timer reset!');
+        } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
-                    var newnotif = new Notification(
-                        name + " had their timer reset!"
-                    );
+                if (permission === 'granted') {
+                    var newnotif = new Notification(name + ' had their timer reset!');
                 }
             });
         }
     }
 
     const unsubscribe = db
-        .collection("timers")
+        .collection('timers')
         .doc(id)
         .onSnapshot((doc) => {
             if (votingActive && votingStarted) {
@@ -156,10 +174,7 @@
             }
         });
 
-    $: currTime =
-        timer != null
-            ? Math.floor(($time.getTime() - timer.getTime()) / 1000)
-            : 0;
+    $: currTime = timer != null ? Math.floor(($time.getTime() - timer.getTime()) / 1000) : 0;
     $: hours = Math.floor(currTime / 3600);
     $: minutes = Math.floor(currTime / 60) - hours * 60; //Calculate number of minutes remaining
     $: seconds = Math.floor(currTime % 60); //Calculate number of seconds remaining (in current minute)
@@ -167,13 +182,18 @@
     onDestroy(unsubscribe);
 </script>
 
-<div class="timer" class:resetbs={resetter} class:resetting={votingActive} on:mouseleave={() => (flipped = false)}>
-    <img
-        class="solid"
-        src="/images/{name}-anim.gif"
-        alt="Profile animated gif"
-    />
-    <img class="opac" src="/images/{name}.png" alt="Profile opacity changes" />
+<div
+    class="timer"
+    class:resetbs={resetter}
+    class:resetting={votingActive}
+    on:mouseleave={() => (flipped = false)}
+>
+    <!--<img
+		class="solid"
+		src="/images/{name}-anim.gif"
+		alt="Profile animated gif"
+	/>-->
+    <img id="dc-avatar" class="solid" src="" alt="Profile opacity changes" />
     <div class="flipper cpointer hide" on:click={() => (flipped = !flipped)}>
         <i class="fas fa-info-circle" />
     </div>
@@ -184,9 +204,7 @@
             <span class="time-span pos-abs cdefault"
                 >{hours}:{padWithZeroes(minutes)}:{padWithZeroes(seconds)}</span
             >
-            <button class="hide" type="button" on:click={beginVoting}
-                >Vote Reset</button
-            >
+            <button class="hide" type="button" on:click={beginVoting}>Vote Reset</button>
         {:else}
             <div class="reset-container">
                 <span class="time-span">Reset?</span>
@@ -203,12 +221,8 @@
                 </div>
             </div>
             <div class="voting-buttons">
-                <button class="hide" type="button" on:click={addYesVote}
-                    >Yes</button
-                >
-                <button class="hide" type="button" on:click={addNoVote}
-                    >No</button
-                >
+                <button class="hide" type="button" on:click={addYesVote}>Yes</button>
+                <button class="hide" type="button" on:click={addNoVote}>No</button>
             </div>
         {/if}
     </div>
@@ -299,25 +313,25 @@
         transition: transform 0.5s ease;
     }
 
-    .opac {
-        position: absolute;
-        z-index: 0 !important;
-        filter: brightness(70%);
-        border-radius: 50%;
-        -webkit-transform: scale(1);
-        transform: scale(1);
-        opacity: 1;
-        -webkit-transition: -webkit-transform 0.5s ease;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
+    /*.opac {
+		position: absolute;
+		z-index: 0 !important;
+		filter: brightness(70%);
+		border-radius: 50%;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+		opacity: 1;
+		-webkit-transition: -webkit-transform 0.5s ease;
+		transition: opacity 0.5s ease, transform 0.5s ease;
+	}
 
-    .timer:hover .opac {
-        -webkit-transform: scale(1.25);
-        transform: scale(1.25);
-        opacity: 0;
-        -webkit-transition: -webkit-transform 0.5s ease;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-    }
+	.timer:hover .opac {
+		-webkit-transform: scale(1.25);
+		transform: scale(1.25);
+		opacity: 0;
+		-webkit-transition: -webkit-transform 0.5s ease;
+		transition: opacity 0.5s ease, transform 0.5s ease;
+	}*/
 
     .timer:hover .hide {
         visibility: visible;
@@ -336,7 +350,7 @@
 
     .votereason {
         font-size: 1.25rem;
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
         overflow: hidden;
         padding: 1.5rem;
@@ -348,13 +362,13 @@
 
     .time-name {
         font-size: 2rem;
-        font-family: "Roboto", sans-serif;
+        font-family: 'Roboto', sans-serif;
         font-weight: bold;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
     }
 
     .time-span {
-        font-family: "Roboto Mono", monospace;
+        font-family: 'Roboto Mono', monospace;
         font-size: 2.5rem;
         text-shadow: 0 1px 5px rgb(0 0 0 / 50%);
     }

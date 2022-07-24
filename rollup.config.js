@@ -4,6 +4,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
+import replace from '@rollup/plugin-replace';
+import dotenv from 'dotenv';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -37,6 +39,9 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+            DISCORD_API_KEY: JSON.stringify(process.env.DISCORD_API_KEY)
+        }),
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
