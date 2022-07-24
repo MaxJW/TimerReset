@@ -19,8 +19,6 @@
     export let name;
     export let id;
 
-    export let discordID;
-
     let timer;
     let oldResetCount = 0;
     let resetter = false;
@@ -33,38 +31,9 @@
     let votingStarted = false;
     let flipped = false;
 
-    //get discord key from .env, send request to discord api to get user from id using key in authorization header
-    //if user is not found, return null
-    function getUser() {
-        const dc_key = DISCORD_API_KEY;
-        let url = `https://discord.com/api/v10/users/${discordID}`;
-        let headers = new Headers();
-        headers.append('Authorization', `Bot ${dc_key}`);
-        return fetch(url, {
-            headers: headers,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.avatar) {
-                    return data;
-                } else {
-                    return null;
-                }
-            });
-    }
-
     onMount(() => {
         timer = lastReset.toDate();
         oldResetCount = timesReset;
-        //get user from id then assign avatar to dc-avatar
-        getUser().then((user) => {
-            if (user) {
-                let avatar = user.avatar;
-                let url = `https://cdn.discordapp.com/avatars/${discordID}/${avatar}.png`;
-                let img = document.getElementById('dc-avatar');
-                img.src = url;
-            }
-        });
     });
 
     function beginVoting() {
@@ -193,7 +162,7 @@
 		src="/images/{name}-anim.gif"
 		alt="Profile animated gif"
 	/>-->
-    <img id="dc-avatar" class="solid" src="" alt="Profile opacity changes" />
+    <img id="dc-avatar" class="solid" src="/images/{name}.png" alt="Profile opacity changes" />
     <div class="flipper cpointer hide" on:click={() => (flipped = !flipped)}>
         <i class="fas fa-info-circle" />
     </div>
