@@ -157,12 +157,8 @@
     class:resetting={votingActive}
     on:mouseleave={() => (flipped = false)}
 >
-    <!--<img
-		class="solid"
-		src="/images/{name}-anim.gif"
-		alt="Profile animated gif"
-	/>-->
-    <img id="dc-avatar" class="solid" src="/images/{name}.png" alt="Profile opacity changes" />
+    <img class="solid" src="/images/{name}-anim.gif" alt="Profile animated gif" />
+    <img class="opac" src="/images/{name}.png" alt="Profile opacity changes" />
     <div class="flipper cpointer hide" on:click={() => (flipped = !flipped)}>
         <i class="fas fa-info-circle" />
     </div>
@@ -282,25 +278,25 @@
         transition: transform 0.5s ease;
     }
 
-    /*.opac {
-		position: absolute;
-		z-index: 0 !important;
-		filter: brightness(70%);
-		border-radius: 50%;
-		-webkit-transform: scale(1);
-		transform: scale(1);
-		opacity: 1;
-		-webkit-transition: -webkit-transform 0.5s ease;
-		transition: opacity 0.5s ease, transform 0.5s ease;
-	}
+    .opac {
+        position: absolute;
+        z-index: 0 !important;
+        filter: brightness(70%);
+        border-radius: 50%;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 1;
+        -webkit-transition: -webkit-transform 0.5s ease;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
-	.timer:hover .opac {
-		-webkit-transform: scale(1.25);
-		transform: scale(1.25);
-		opacity: 0;
-		-webkit-transition: -webkit-transform 0.5s ease;
-		transition: opacity 0.5s ease, transform 0.5s ease;
-	}*/
+    .timer:hover .opac {
+        -webkit-transform: scale(1.25);
+        transform: scale(1.25);
+        opacity: 0;
+        -webkit-transition: -webkit-transform 0.5s ease;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
     .timer:hover .hide {
         visibility: visible;
