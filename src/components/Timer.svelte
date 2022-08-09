@@ -18,6 +18,7 @@
 
     export let name;
     export let id;
+    export let avatar;
 
     let timer;
     let oldResetCount = 0;
@@ -157,8 +158,8 @@
     class:resetting={votingActive}
     on:mouseleave={() => (flipped = false)}
 >
-    <img class="solid" src="/images/{name}-anim.gif" alt="Profile animated gif" />
-    <img class="opac" src="/images/{name}.png" alt="Profile opacity changes" />
+    <!--<img class="solid" src="/images/{name}-anim.gif" alt="Profile animated gif" />-->
+    <img class="solid" src={avatar} alt="Profile opacity changes" />
     <div class="flipper cpointer hide" on:click={() => (flipped = !flipped)}>
         <i class="fas fa-info-circle" />
     </div>
@@ -261,6 +262,7 @@
     }
 
     .solid {
+        background-color: #161f27;
         position: absolute;
         z-index: -1 !important;
         filter: brightness(70%);
