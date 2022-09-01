@@ -273,14 +273,15 @@
         transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
-    .timer:hover .solid {
+    .timer:hover .solid,
+    .timer:active .solid {
         -webkit-transform: scale(1.25);
         transform: scale(1.25);
         -webkit-transition: -webkit-transform 0.5s ease;
         transition: transform 0.5s ease;
     }
 
-    .opac {
+    /* .opac {
         position: absolute;
         z-index: 0 !important;
         filter: brightness(70%);
@@ -298,9 +299,10 @@
         opacity: 0;
         -webkit-transition: -webkit-transform 0.5s ease;
         transition: opacity 0.5s ease, transform 0.5s ease;
-    }
+    } */
 
-    .timer:hover .hide {
+    .timer:hover .hide,
+    .timer:active .hide {
         visibility: visible;
         opacity: 1;
     }
