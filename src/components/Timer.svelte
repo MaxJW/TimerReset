@@ -269,6 +269,7 @@
         border-radius: 50%;
         -webkit-transform: scale(1);
         transform: scale(1);
+        border-radius: 50%;
         -webkit-transition: -webkit-transform 0.5s ease;
         transition: opacity 0.5s ease, transform 0.5s ease;
     }
